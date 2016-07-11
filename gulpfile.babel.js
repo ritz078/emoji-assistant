@@ -4,6 +4,12 @@ import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import runSequence from 'run-sequence';
 import {stream as wiredep} from 'wiredep';
+import rollup from 'rollup-stream';
+
+import babel from 'rollup-plugin-babel';
+import commonjs from 'rollup-plugin-commonjs';
+import npm from 'rollup-plugin-node-resolve';
+import source from 'vinyl-source-stream';
 
 const $ = gulpLoadPlugins();
 
@@ -87,9 +93,28 @@ gulp.task('babel', () => {
       .pipe(gulp.dest('app/scripts'));
 });
 
+gulp.task('rollup', () => {
+  return rollup({
+    entry: 'app/scripts.babel/contentscript.js',
+    plugins      : [
+      npm({
+        jsnext: true,
+        main  : true
+      }),
+      commonjs(),
+      babel({
+        babelrc:false,
+        presets:['es2015-rollup']
+      })
+    ]
+  })
+    .pipe(source('contentscript.js'))
+    .pipe(gulp.dest('app/scripts'))
+});
+
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'babel', 'html'], () => {
+gulp.task('watch', ['lint', 'rollup', 'html'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -100,7 +125,7 @@ gulp.task('watch', ['lint', 'babel', 'html'], () => {
     'app/_locales/**/*.json'
   ]).on('change', $.livereload.reload);
 
-  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'babel']);
+  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup']);
   gulp.watch('bower.json', ['wiredep']);
 });
 
@@ -125,7 +150,7 @@ gulp.task('package', function () {
 
 gulp.task('build', (cb) => {
   runSequence(
-    'lint', 'babel', 'chromeManifest',
+    'lint', 'rollup', 'chromeManifest',
     ['html', 'images', 'extras'],
     'size', cb);
 });
