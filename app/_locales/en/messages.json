@@ -1,10 +1,10 @@
 {
   "appName": {
-    "message": "emoji",
+    "message": "Emoji Assistant",
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "My Chrome Extension",
+    "message": "A chrome extension to suggest emojis while writing.",
     "description": "The description of the application"
   }
 }
