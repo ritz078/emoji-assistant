@@ -53,8 +53,6 @@
     }
   },
   "dependencies": {
-    "emoji-autocomplete": "^0.1.1",
-    "jquery": "^3.1.0",
-    "jquery.caret": "^0.3.1"
+    "emoji-autocomplete": "^0.1.1"
   }
 }

@@ -36,5 +36,11 @@
     },
     "default_title": "emoji",
     "default_popup": "popup.html"
+  },
+  "background": {
+    "scripts": [
+      "scripts/chromereload.js",
+      "scripts/background.js"
+    ]
   }
 }

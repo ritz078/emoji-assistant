@@ -35,7 +35,7 @@ function lint(files, options) {
   };
 }
 
-gulp.task('lint', lint('app/scripts.babel/**/*.js', {
+gulp.task('lint', lint(['app/scripts.babel/**/*.js', '!app/scripts.babel/vendor/*.js'], {
   env: {
     es6: true
   },
@@ -113,8 +113,7 @@ gulp.task('rollup', () => {
       commonjs(),
       babel({
         babelrc:false,
-        presets:['es2015-rollup'],
-        plugins: ["transform-object-rest-spread"]
+        presets:['es2015-rollup']
       })
     ]
   })
@@ -122,9 +121,29 @@ gulp.task('rollup', () => {
     .pipe(gulp.dest('app/scripts'))
 });
 
+gulp.task('rollup2', () => {
+  return rollup({
+    entry: 'app/scripts.babel/background.js',
+    plugins      : [
+      json(),
+      npm({
+        jsnext: true,
+        main  : true
+      }),
+      commonjs(),
+      babel({
+        babelrc:false,
+        presets:['es2015-rollup']
+      })
+    ]
+  })
+    .pipe(source('background.js'))
+    .pipe(gulp.dest('app/scripts'))
+});
+
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'rollup', 'html'], () => {
+gulp.task('watch', ['lint', 'rollup','rollup2' , 'html'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -135,7 +154,7 @@ gulp.task('watch', ['lint', 'rollup', 'html'], () => {
     'app/_locales/**/*.json'
   ]).on('change', $.livereload.reload);
 
-  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup']);
+  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup', 'rollup2']);
   gulp.watch('bower.json', ['wiredep']);
 });
 

@@ -1,6 +1,6 @@
 import emojiAuto from 'emoji-autocomplete/src/autocomplete';
-import $ from 'jquery';
-import 'jquery.caret';
+import $ from './vendor/jquery.min';
+import './vendor/jquery.caret';
 
 import cursorPosition from './helpers/cursorPosition';
 import wordAtPosition from './helpers/wordAtPosition';
@@ -9,14 +9,7 @@ import suppress from './helpers/suppress';
 
 'use strict';
 const body = document.body;
-
-const $input = $('div[contenteditable="true"],input[type=text], textarea');
-
-$input.each(function (i, elem) {
-  this.initialText = isContentEditable(this) ? $(this).text() : $(this).val()
-});
-
-let isSuggestionOpen = false;
+let $input, isSuggestionOpen, html;
 
 /**
  * Removes the dropdown
@@ -26,8 +19,25 @@ function removeSuggestions () {
   isSuggestionOpen = false;
 }
 
+function suggestions (elem, query) {
+  const results = emojiAuto.match(query).slice(0, 10);
+  const position = elem.caret('offset');
+  const suggestion = results.map((val, i) => {
+    const className = i === 0 ? 'emoji-suggestion active' : 'emoji-suggestion';
+    return `
+    <div class='${className}' data-index='${i}'>
+      <span class='emoji-value inline'>${val.emoji}</span>
+      <span class='emoji-name inline'>${val.name}</span>
+    </div>`;
+  });
+
+  return `<div id='emoji-autosuggest'
+    style='top:${position.top + position.height + 5}px; left: ${position.left}px;'
+  >${suggestion.join('')}</div>`;
+}
+
 function navigate (e) {
-  const $elements = $('#emoji-autosuggest .emoji-suggesstion');
+  const $elements = $('#emoji-autosuggest .emoji-suggestion');
   if (!$elements.length) return;
   const activeIndex = $elements.siblings('.active').data('index');
   if (e.which === 40 && (activeIndex < $elements.length)) {
@@ -44,15 +54,16 @@ function navigate (e) {
 
 function handleKeyPress (e) {
   if (e.which === 16) return; // shift key
+
+  let value;
+
   if (e.which === 40 || e.which === 38 || e.which === 13) {
-    e.preventDefault();
-    e.stopPropagation();
     const selected = navigate(e);
     if (isSuggestionOpen && e.which === 13) {
       if (isContentEditable($(this)[0])) {
-        this.innerHTML = html.replace(word, selected + ' ');
+        this.innerHTML = html.replace(this.word, selected + ' ');
       } else {
-        this.value = value.replace(word, selected)
+        this.value = this.value.replace(this.word, selected + ' ')
       }
       removeSuggestions();
     }
@@ -62,43 +73,43 @@ function handleKeyPress (e) {
     html = this.innerHTML;
 
     const isDeleted = e.which === 8;
-    changeIndex = cursorPosition(value, this.initialText, isDeleted);
-    word = wordAtPosition(value, changeIndex);
+    const changeIndex = cursorPosition(value, this.initialText, isDeleted);
+    this.word = wordAtPosition(value, changeIndex);
   }
 
   removeSuggestions();
-  if (word.indexOf(':') === 0) {
-    $(body).append(suggestions($(this), word.slice(1)));
+  if (this.word.indexOf(':') === 0) {
+    $(body).append(suggestions($(this), this.word.slice(1)));
     isSuggestionOpen = true;
   }
   this.initialText = value;
 }
 
-let value, changeIndex, word, html;
+function init () {
+  removeSuggestions();
 
-$($input).off('keyup.emoji').on('keyup.emoji', function (e) {
-  if (!isSuggestionOpen && e.which === 13) return true;
-  suppress(e);
-  handleKeyPress.bind(this)(e);
-});
+  $input = $('div[contenteditable="true"],input[type=text], textarea');
 
-
-function suggestions (elem, query) {
-  const results = emojiAuto.match(query).slice(0, 10);
-  const position = elem.caret('offset');
-  const suggestion = results.map((val, i) => {
-    const className = i === 0 ? 'emoji-suggesstion active' : 'emoji-suggesstion';
-    return `
-    <div class='${className}' data-index='${i}'>
-      <span class='emoji-value inline'>${val.emoji}</span>
-      <span class='emoji-name inline'>${val.name}</span>
-    </div>`;
+  $input.each(function () {
+    this.initialText = isContentEditable(this) ? $(this).text() : $(this).val()
   });
 
-  return `
-  <div id='emoji-autosuggest'
-    style=' top: ${position.top + position.height + 5}px; left: ${position.left}px; '
-  >${suggestion.join('')}</div>
-`;
+  $($input).off('keydown.emoji').on('keydown.emoji', function (e) {
+    if(e.which == 13 && isSuggestionOpen){
+      suppress(e)
+    }
+  });
+
+  $($input).off('keyup.emoji').on('keyup.emoji', function (e) {
+    if (!isSuggestionOpen && e.which === 13) return true;
+    suppress(e);
+    handleKeyPress.bind(this)(e);
+  });
 }
+
+init();
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  init();
+});
 

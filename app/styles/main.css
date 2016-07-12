@@ -6,9 +6,10 @@
   border-radius: 2px;
   position: absolute;
   border: 1px solid #eeeeee;
+  z-index: 9999999;
 }
 
-.emoji-suggesstion{
+.emoji-suggestion{
   border-bottom: 1px solid #f6f6f6;
   padding: 2px 5px;
 }
@@ -18,11 +19,11 @@
   vertical-align: middle;
 }
 
-.emoji-suggesstion.active{
+.emoji-suggestion.active{
   background-color: #eaeaea;
 }
 
-.emoji-suggesstion .emoji-name{
+.emoji-suggestion .emoji-name{
   font-weight: bold;
   font-size: 12px;
   vertical-align: text-bottom;
