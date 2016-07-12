@@ -1,3 +1,33 @@
-body {
-  padding: 20px;
+#emoji-autosuggest{
+  font-family: sans-serif;
+  color:#666;
+  background-color: white;
+  font-size: 14px;
+  border-radius: 2px;
+  position: absolute;
+  border: 1px solid #eeeeee;
+}
+
+.emoji-suggesstion{
+  border-bottom: 1px solid #f6f6f6;
+  padding: 2px 5px;
+}
+
+#emoji-autosuggest .inline{
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.emoji-suggesstion.active{
+  background-color: #eaeaea;
+}
+
+.emoji-suggesstion .emoji-name{
+  font-weight: bold;
+  font-size: 12px;
+  vertical-align: text-bottom;
+  max-width: 250px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

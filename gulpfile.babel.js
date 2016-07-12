@@ -10,6 +10,7 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import npm from 'rollup-plugin-node-resolve';
 import source from 'vinyl-source-stream';
+import json from 'rollup-plugin-json';
 
 const $ = gulpLoadPlugins();
 
@@ -37,6 +38,13 @@ function lint(files, options) {
 gulp.task('lint', lint('app/scripts.babel/**/*.js', {
   env: {
     es6: true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "modules": true
+    }
   }
 }));
 
@@ -97,6 +105,7 @@ gulp.task('rollup', () => {
   return rollup({
     entry: 'app/scripts.babel/contentscript.js',
     plugins      : [
+      json(),
       npm({
         jsnext: true,
         main  : true
@@ -104,7 +113,8 @@ gulp.task('rollup', () => {
       commonjs(),
       babel({
         babelrc:false,
-        presets:['es2015-rollup']
+        presets:['es2015-rollup'],
+        plugins: ["transform-object-rest-spread"]
       })
     ]
   })

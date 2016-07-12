@@ -8,12 +8,6 @@
     "128": "images/icon-128.png"
   },
   "default_locale": "en",
-  "background": {
-    "scripts": [
-      "scripts/chromereload.js",
-      "scripts/background.js"
-    ]
-  },
   "permissions": [
     "tabs",
     "http://*/*",
@@ -27,6 +21,9 @@
       ],
       "js": [
         "scripts/contentscript.js"
+      ],
+      "css": [
+        "styles/main.css"
       ],
       "run_at": "document_end",
       "all_frames": false
