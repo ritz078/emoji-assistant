@@ -14,6 +14,7 @@
 ###Contents
 * [Screenshot](#screenshot)
 * [Disabling on a domain](#disabling-on-a-domain)
+* [Know issues](#known-issues)
 * [Development](#development)
 
 ###Screenshot
@@ -23,6 +24,9 @@
 The icon of the extension works as a toggle switch. Click on it and it will enable/disable for the current domain.
 
 **Note** : It will also refresh the page as soon as you click it.
+
+###Known Issues
+Sometimes in Single Page Applications, the extension script isn't run at a proper time when the page updates due to the [inconsistent behaviour](http://stackoverflow.com/questions/27708352/chrome-tabs-onupdated-addlistener-called-multiple-times) of `chrome.tabs.onUpdated` API. In such cases you can manually trigger the extension by using the shortcut `Cmd/Ctrl + Alt + E`. 
 
 ### Development
 1. Fork and clone the repo.
