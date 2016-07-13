@@ -1,5 +1,4 @@
 export default function (str, pos) {
-  console.log('str => ', str, 'pos =>', pos);
   // Perform type conversions.
   str = String(str);
   pos = Number(pos) >>> 0;

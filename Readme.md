@@ -12,3 +12,5 @@
 > A chrome extension to autosuggest emojis while writing on the web.
 
 
+### License
+MIT © <a href="https://twitter.com/ritz078" target="_blank">Ritesh Kumar</a>

@@ -96,11 +96,21 @@ function handleKeyPress (e) {
 }
 
 function init () {
-  if (blacklistedDomains.indexOf(window.location.hostname) >= 0) return;
+  // prevent for the textareas of github.com
+  if(window.location.hostname === 'github.com'){
+    $('textarea').addClass('es-disabled');
+  }
+
+  if (blacklistedDomains.indexOf(window.location.hostname) >= 0){
+    $(body).removeClass('enable-emoji-assistant').addClass('disable-emoji-assistant');
+    return;
+  } else {
+    $(body).removeClass('disable-emoji-assistant').addClass('enable-emoji-assistant');
+  }
 
   removeSuggestions();
 
-  $input = $('div[contenteditable="true"],input[type=text], textarea');
+  $input = $('div[contenteditable="true"],input[type=text], textarea').not('.es-disabled');
 
   $input.each(function () {
     this.initialText = isContentEditable(this) ? $(this).text() : $(this).val()
@@ -123,10 +133,8 @@ let url;
 
 // listener for URL change
 chrome.runtime.onMessage.addListener(function (request) {
-  if (request.data.status === 'complete' && request.data.url !== url) {
     init();
     url = request.data.url;
-  }
 });
 
 chrome.storage.sync.get('blacklistedDomains', function (response) {
