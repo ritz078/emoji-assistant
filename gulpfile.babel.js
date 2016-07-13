@@ -5,6 +5,7 @@ import del from 'del';
 import runSequence from 'run-sequence';
 import {stream as wiredep} from 'wiredep';
 import rollup from 'rollup-stream';
+import zip from 'gulp-zip';
 
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
@@ -64,6 +65,12 @@ gulp.task('images', () => {
     .pipe(gulp.dest('dist/images'));
 });
 
+gulp.task('zip', () => {
+  return gulp.src('dist/*')
+    .pipe(zip('archive.zip'))
+    .pipe(gulp.dest('dist'))
+});
+
 gulp.task('html',  () => {
   return gulp.src('app/*.html')
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
@@ -93,7 +100,7 @@ gulp.task('chromeManifest', () => {
   .pipe(gulp.dest('dist'));
 });
 
-gulp.task('rollup', () => {
+gulp.task('rollup-contentscript', () => {
   return rollup({
     entry: 'app/scripts.babel/contentscript.js',
     plugins      : [
@@ -113,7 +120,7 @@ gulp.task('rollup', () => {
     .pipe(gulp.dest('app/scripts'))
 });
 
-gulp.task('rollup2', () => {
+gulp.task('rollup-background', () => {
   return rollup({
     entry: 'app/scripts.babel/background.js',
     plugins      : [
@@ -155,7 +162,7 @@ gulp.task('rollup-popup', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'rollup','rollup2' ,'rollup-popup' , 'html'], () => {
+gulp.task('watch', ['lint', 'rollup' , 'html'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -166,7 +173,7 @@ gulp.task('watch', ['lint', 'rollup','rollup2' ,'rollup-popup' , 'html'], () => 
     'app/_locales/**/*.json'
   ]).on('change', $.livereload.reload);
 
-  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup', 'rollup2', 'rollup-popup']);
+  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup']);
   gulp.watch('bower.json', ['wiredep']);
 });
 
@@ -189,10 +196,12 @@ gulp.task('package', function () {
       .pipe(gulp.dest('package'));
 });
 
+gulp.task('rollup', ['rollup-contentscript', 'rollup-background', 'rollup-popup']);
+
 gulp.task('build', (cb) => {
   runSequence(
-    'lint', 'rollup','rollup2','rollup-popup', 'chromeManifest',
-    ['html', 'images', 'extras'],
+    'clean', 'lint', 'rollup', 'chromeManifest',
+    ['html', 'images', 'extras'],'zip',
     'size', cb);
 });
 
