@@ -23,6 +23,19 @@ $(window).click(() => {
   removeSuggestions();
 });
 
+/**
+ * Just a hack to manually trigger emoji-suggest
+ * when sometimes the elements don't update on SPAs
+ *
+ * Shortcut : Cmd + Alt + E
+ */
+$(window).keydown((e) => {
+  if(e.metaKey && e.altKey && e.which === 69){
+    suppress(e);
+    init();
+  }
+});
+
 function suggestions (elem, query) {
   const results = emojiAuto.match(query).slice(0, 10);
   const position = elem.caret('offset');
