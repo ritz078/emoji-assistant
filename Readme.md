@@ -15,6 +15,7 @@
 * [Screenshot](#screenshot)
 * [Disabling on a domain](#disabling-on-a-domain)
 * [Know issues](#known-issues)
+* [Todo](#todo)
 * [Development](#development)
 
 ###Screenshot
@@ -27,6 +28,13 @@ The icon of the extension works as a toggle switch. Click on it and it will enab
 
 ###Known Issues
 Sometimes in Single Page Applications, the extension script isn't run at a proper time when the page updates due to the [inconsistent behaviour](http://stackoverflow.com/questions/27708352/chrome-tabs-onupdated-addlistener-called-multiple-times) of `chrome.tabs.onUpdated` API. In such cases you can manually trigger the extension by using the shortcut `Cmd/Ctrl + Alt + E`. 
+
+###Todo
+
+- [ ] Better GUI for domain enable/disable
+- [ ] Disable at input box level
+- [ ] show twitter emojis if domain is twitter.com
+- [ ] Find a workaround for `.onUpdated` API issue mentioned in know issues.
 
 ### Development
 1. Fork and clone the repo.
