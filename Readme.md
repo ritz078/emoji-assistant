@@ -11,6 +11,11 @@
 
 > A chrome extension to autosuggest emojis while writing on the web.
 
+###Contents
+* [Screenshot](#screenshot)
+* [Disabling on a domain](#disabling-on-a-domain)
+* [Development](#development)
+
 ###Screenshot
 ![](assets/demo.gif)
 
