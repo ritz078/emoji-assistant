@@ -6,7 +6,7 @@ chrome.runtime.onInstalled.addListener(details => {
 
 chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
   chrome.pageAction.show(tabId);
-  chrome.tabs.sendMessage(tabId, {data: tab}, function (response) {
+  chrome.tabs.sendMessage(tabId, { data: tab }, function (response) {
     console.log(response)
   });
 });

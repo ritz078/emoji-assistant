@@ -93,14 +93,6 @@ gulp.task('chromeManifest', () => {
   .pipe(gulp.dest('dist'));
 });
 
-gulp.task('babel', () => {
-  return gulp.src('app/scripts.babel/**/*.js')
-      .pipe($.babel({
-        presets: ['es2015']
-      }))
-      .pipe(gulp.dest('app/scripts'));
-});
-
 gulp.task('rollup', () => {
   return rollup({
     entry: 'app/scripts.babel/contentscript.js',
@@ -141,9 +133,29 @@ gulp.task('rollup2', () => {
     .pipe(gulp.dest('app/scripts'))
 });
 
+gulp.task('rollup-popup', () => {
+  return rollup({
+    entry: 'app/scripts.babel/popup.js',
+    plugins      : [
+      json(),
+      npm({
+        jsnext: true,
+        main  : true
+      }),
+      commonjs(),
+      babel({
+        babelrc:false,
+        presets:['es2015-rollup']
+      })
+    ]
+  })
+    .pipe(source('popup.js'))
+    .pipe(gulp.dest('app/scripts'))
+});
+
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'rollup','rollup2' , 'html'], () => {
+gulp.task('watch', ['lint', 'rollup','rollup2' ,'rollup-popup' , 'html'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -154,7 +166,7 @@ gulp.task('watch', ['lint', 'rollup','rollup2' , 'html'], () => {
     'app/_locales/**/*.json'
   ]).on('change', $.livereload.reload);
 
-  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup', 'rollup2']);
+  gulp.watch('app/scripts.babel/**/*.js', ['lint', 'rollup', 'rollup2', 'rollup-popup']);
   gulp.watch('bower.json', ['wiredep']);
 });
 
@@ -179,7 +191,7 @@ gulp.task('package', function () {
 
 gulp.task('build', (cb) => {
   runSequence(
-    'lint', 'rollup', 'chromeManifest',
+    'lint', 'rollup','rollup2','rollup-popup', 'chromeManifest',
     ['html', 'images', 'extras'],
     'size', cb);
 });

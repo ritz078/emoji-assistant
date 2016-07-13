@@ -36,6 +36,11 @@ function suggestions (elem, query) {
   >${suggestion.join('')}</div>`;
 }
 
+/**
+ * Handle emoji navigation like up, down arrow and select
+ * @param e
+ * @returns {*|jQuery}
+ */
 function navigate (e) {
   const $elements = $('#emoji-autosuggest .emoji-suggestion');
   if (!$elements.length) return;
@@ -52,14 +57,19 @@ function navigate (e) {
   }
 }
 
+
+/**
+ * Handles keyup event of the input boxes or contenteditables.
+ * @param e
+ */
 function handleKeyPress (e) {
   if (e.which === 16) return; // shift key
 
   let value;
 
-  if (e.which === 40 || e.which === 38 || e.which === 13) {
+  if (isSuggestionOpen && (e.which === 40 || e.which === 38 || e.which === 13)) {
     const selected = navigate(e);
-    if (isSuggestionOpen && e.which === 13) {
+    if (e.which === 13) {
       if (isContentEditable($(this)[0])) {
         this.innerHTML = html.replace(this.word, selected + ' ');
       } else {
@@ -67,12 +77,12 @@ function handleKeyPress (e) {
       }
       removeSuggestions();
     }
-    return false
+    return false;
   } else {
     value = this.value || this.innerText;
     html = this.innerHTML;
 
-    const isDeleted = e.which === 8;
+    const isDeleted = e.which === 8; // backspace/delete
     const changeIndex = cursorPosition(value, this.initialText, isDeleted);
     this.word = wordAtPosition(value, changeIndex);
   }
@@ -95,7 +105,7 @@ function init () {
   });
 
   $($input).off('keydown.emoji').on('keydown.emoji', function (e) {
-    if(e.which == 13 && isSuggestionOpen){
+    if (e.which == 13 && isSuggestionOpen && !isContentEditable(this)) {
       suppress(e)
     }
   });
@@ -109,7 +119,13 @@ function init () {
 
 init();
 
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  init();
+let url;
+
+// listener for URL change
+chrome.runtime.onMessage.addListener(function (request) {
+  if (request.data.status === 'complete' && request.data.url !== url) {
+    init();
+    url = request.data.url;
+  }
 });
 
