@@ -19,6 +19,10 @@ function removeSuggestions () {
   isSuggestionOpen = false;
 }
 
+$(window).click(() => {
+  removeSuggestions();
+});
+
 function suggestions (elem, query) {
   const results = emojiAuto.match(query).slice(0, 10);
   const position = elem.caret('offset');
@@ -90,6 +94,9 @@ function handleKeyPress (e) {
   removeSuggestions();
   if (this.word.indexOf(':') === 0) {
     $(body).append(suggestions($(this), this.word.slice(1)));
+    $('#emoji-autosuggest').off('click').on('click', (e) => {
+      suppress(e)
+    });
     isSuggestionOpen = true;
   }
   this.initialText = value;
