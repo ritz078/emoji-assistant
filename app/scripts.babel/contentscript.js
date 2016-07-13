@@ -9,7 +9,7 @@ import suppress from './helpers/suppress';
 
 'use strict';
 const body = document.body;
-let $input, isSuggestionOpen, html;
+let $input, isSuggestionOpen, html, blacklistedDomains=[];
 
 /**
  * Removes the dropdown
@@ -96,6 +96,8 @@ function handleKeyPress (e) {
 }
 
 function init () {
+  if (blacklistedDomains.indexOf(window.location.hostname) >= 0) return;
+
   removeSuggestions();
 
   $input = $('div[contenteditable="true"],input[type=text], textarea');
@@ -117,8 +119,6 @@ function init () {
   });
 }
 
-init();
-
 let url;
 
 // listener for URL change
@@ -129,3 +129,7 @@ chrome.runtime.onMessage.addListener(function (request) {
   }
 });
 
+chrome.storage.sync.get('blacklistedDomains', function (response) {
+  blacklistedDomains = response.blacklistedDomains;
+  init();
+});
