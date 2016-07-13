@@ -11,6 +11,21 @@
 
 > A chrome extension to autosuggest emojis while writing on the web.
 
+###Screenshot
+![](assets/demo.gif)
+
+### Disabling on a domain
+The icon of the extension works as a toggle switch. Click on it and it will enable/disable for the current domain.
+
+**Note** : It will also refresh the page as soon as you click it.
+
+### Development
+1. Fork and clone the repo.
+2. Create a new branch.
+3. run `cd emoji-assistant && npm install && gulp watch`.
+4. [Load the unpacked extension](https://developer.chrome.com/extensions/getstarted#unpacked) in your browser.
+5. Fix issues or add feature.
+6. Open a PR.
 
 ### License
 MIT © <a href="https://twitter.com/ritz078" target="_blank">Ritesh Kumar</a>
