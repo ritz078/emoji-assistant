@@ -9,7 +9,7 @@
    </a>
    </p>
 
-> A chrome extension to autosuggest emojis while writing on the web.
+> A chrome extension to autosuggest emojis while writing on the web. It works in any test input fields, textarea and contenteditable divs.
 
 ###Contents
 * [Screenshot](#screenshot)
