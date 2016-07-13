@@ -4,17 +4,17 @@ import includes from './helpers/includes';
 let blacklistedDomains = [];
 
 
-
 function handleBadge (url) {
 
   const color = includes(blacklistedDomains, extractDomain(url)) ? 'red' : 'green';
+  const text = includes(blacklistedDomains, extractDomain(url)) ? 'off' : 'on';
 
-  chrome.browserAction.setBadgeText({text:'3'});
-  chrome.browserAction.setBadgeBackgroundColor({color})
+  chrome.browserAction.setBadgeText({ text });
+  chrome.browserAction.setBadgeBackgroundColor({ color })
 }
 
 chrome.tabs.onActivated.addListener(function () {
-  chrome.tabs.getSelected(null, function(tab) {
+  chrome.tabs.getSelected(null, function (tab) {
     console.log(tab);
     handleBadge(tab.url);
   })
@@ -27,19 +27,19 @@ chrome.tabs.onUpdated.addListener((tabId, info, tab) => {
 });
 
 chrome.storage.sync.get('blacklistedDomains', function (response) {
-  if(response && response.length) blacklistedDomains = response;
+  if (response && response.length) blacklistedDomains = response;
 });
 
-chrome.browserAction.onClicked.addListener(function(tab) {
+chrome.browserAction.onClicked.addListener(function (tab) {
   const domain = extractDomain(tab.url);
-  if(!includes(blacklistedDomains, domain)){
+  if (!includes(blacklistedDomains, domain)) {
     blacklistedDomains.push(domain)
   } else {
     const index = blacklistedDomains.indexOf(domain);
     blacklistedDomains.splice(index, 1);
   }
 
-  chrome.storage.sync.set({blacklistedDomains}, function() {
+  chrome.storage.sync.set({ blacklistedDomains }, function () {
     // Notify that we saved.
     chrome.tabs.reload(tab.id);
   });
