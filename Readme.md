@@ -36,5 +36,8 @@ Sometimes in Single Page Applications, the extension script isn't run at a prope
 5. Fix issues or add feature.
 6. Open a PR.
 
+###Credits
+The logo is designed by [Ranjith Alingal](https://dribbble.com/ranjithalingal)
+
 ### License
 MIT © <a href="https://twitter.com/ritz078" target="_blank">Ritesh Kumar</a>
