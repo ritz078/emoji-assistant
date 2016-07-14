@@ -36,7 +36,6 @@ function init () {
     id: 'emoji-autosuggest',
     match: /\B:([\-+\w]*)$/,
     search: function (term, callback) {
-      console.log(term, callback);
       callback(window.emojiAuto.match(term))
     },
     template: function (value) {
@@ -53,7 +52,8 @@ function init () {
     height: 265,
     maxCount: 10,
     placementStr: 'top',
-    debounce: 500
+    debounce: 150,
+    zIndex: '999999'
   });
 }
 
