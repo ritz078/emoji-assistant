@@ -22,7 +22,7 @@
       ],
       "js": [
         "scripts/vendor/jquery.js",
-        "scripts/vendor/jquery.caret.js",
+        "scripts/vendor/jquery.autocomplete.js",
         "scripts/vendor/emojiAuto.js",
         "scripts/contentscript.js"
       ],
