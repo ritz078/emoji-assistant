@@ -15,21 +15,21 @@
 .emoji-assistant li {
   list-style-type: none;
 }
-.textcomplete-item{
+.emoji-assistant .textcomplete-item{
   border-bottom: 1px solid #f6f6f6;
   padding: 2px 5px;
 }
 
-#emoji-assistant .inline{
+.emoji-assistant .inline{
   display: inline-block;
   vertical-align: middle;
 }
 
-.textcomplete-item.active{
+.emoji-assistant .textcomplete-item.active{
   background-color: #eaeaea;
 }
 
-.textcomplete-item .emoji-name{
+.emoji-assistant .textcomplete-item .emoji-name{
   font-weight: bold;
   font-size: 12px;
   vertical-align: text-bottom;
@@ -37,4 +37,5 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color:black;
 }

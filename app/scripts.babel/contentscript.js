@@ -30,8 +30,6 @@ function init () {
     $(body).removeClass('disable-emoji-assistant').addClass('enable-emoji-assistant');
   }
 
-  $input.textcomplete('destroy');
-
   $input = $('div[contenteditable="true"],input[type=text], textarea').not('.es-disabled');
 
   $input.textcomplete([{
@@ -54,7 +52,8 @@ function init () {
     dropdownClassName: 'emoji-assistant',
     height: 265,
     maxCount: 10,
-    placementStr: 'top'
+    placementStr: 'top',
+    debounce: 500
   });
 }
 
