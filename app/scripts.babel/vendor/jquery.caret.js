@@ -1,14 +1,14 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     // AMD. Register as an anonymous module.
-    define(["./jquery.min"], function ($) {
+    define(["./jquery"], function ($) {
       return (root.returnExportsGlobal = factory($));
     });
   } else if (typeof exports === 'object') {
     // Node. Does not work with strict CommonJS, but
     // only CommonJS-like enviroments that support module.exports,
     // like Node.
-    module.exports = factory(require("./jquery.min"));
+    module.exports = factory(require("./jquery.js"));
   } else {
     factory(jQuery);
   }

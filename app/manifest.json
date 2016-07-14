@@ -1,6 +1,6 @@
 {
   "name": "__MSG_appName__",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
@@ -21,6 +21,9 @@
         "https://*/*"
       ],
       "js": [
+        "scripts/vendor/jquery.js",
+        "scripts/vendor/jquery.caret.js",
+        "scripts/vendor/emojiAuto.js",
         "scripts/contentscript.js"
       ],
       "css": [

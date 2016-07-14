@@ -1,7 +1,3 @@
-import emojiAuto from 'emoji-autocomplete/src/autocomplete';
-import $ from './vendor/jquery.min';
-import './vendor/jquery.caret';
-
 import cursorPosition from './helpers/cursorPosition';
 import wordAtPosition from './helpers/wordAtPosition';
 import isContentEditable from './helpers/isContentEditable';
@@ -37,7 +33,7 @@ $(window).keydown((e) => {
 });
 
 function suggestions (elem, query) {
-  const results = emojiAuto.match(query).slice(0, 10);
+  const results = window.emojiAuto.match(query).slice(0, 10);
   const position = elem.caret('offset');
   const suggestion = results.map((val, i) => {
     const className = i === 0 ? 'emoji-suggestion active' : 'emoji-suggestion';
@@ -158,6 +154,6 @@ chrome.runtime.onMessage.addListener(function (request) {
 });
 
 chrome.storage.sync.get('blacklistedDomains', function (response) {
-  blacklistedDomains = response.blacklistedDomains;
+  blacklistedDomains = response.blacklistedDomains || [];
   init();
 });

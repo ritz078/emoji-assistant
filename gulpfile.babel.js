@@ -3,7 +3,7 @@ import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import del from 'del';
 import runSequence from 'run-sequence';
-import {stream as wiredep} from 'wiredep';
+import { stream as wiredep } from 'wiredep';
 import rollup from 'rollup-stream';
 import zip from 'gulp-zip';
 
@@ -28,7 +28,14 @@ gulp.task('extras', () => {
   }).pipe(gulp.dest('dist'));
 });
 
-function lint(files, options) {
+gulp.task('vendor', () => {
+  return gulp.src([
+    'app/scripts.babel/vendor/jquery.js',
+    'app/scripts.babel/vendor/jquery.caret.js'
+  ]).pipe(gulp.dest('app/scripts/vendor/'))
+});
+
+function lint (files, options) {
   return () => {
     return gulp.src(files)
       .pipe($.eslint(options))
@@ -56,29 +63,26 @@ gulp.task('images', () => {
       interlaced: true,
       // don't remove IDs from SVGs, they are often used
       // as hooks for embedding and styling
-      svgoPlugins: [{cleanupIDs: false}]
+      svgoPlugins: [{ cleanupIDs: false }]
     }))
-    .on('error', function (err) {
-      console.log(err);
-      this.end();
-    })))
+      .on('error', function (err) {
+        console.log(err);
+        this.end();
+      })))
     .pipe(gulp.dest('dist/images'));
 });
 
-gulp.task('zip', () => {
-  return gulp.src('dist/*')
-    .pipe(zip('archive.zip'))
-    .pipe(gulp.dest('dist'))
-});
-
-gulp.task('html',  () => {
+gulp.task('html', () => {
   return gulp.src('app/*.html')
-    .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
+    .pipe($.useref({ searchPath: ['.tmp', 'app', '.'] }))
     .pipe($.sourcemaps.init())
-    .pipe($.if('*.js', $.uglify()))
-    .pipe($.if('*.css', $.cleanCss({compatibility: '*'})))
+    // .pipe($.if('*.js', $.uglify()))
+    // .pipe($.if('*.css', $.cleanCss({ compatibility: '*' })))
     .pipe($.sourcemaps.write())
-    .pipe($.if('*.html', $.htmlmin({removeComments: true, collapseWhitespace: true})))
+    .pipe($.if('*.html', $.htmlmin({
+      removeComments: true,
+      collapseWhitespace: true
+    })))
     .pipe(gulp.dest('dist'));
 });
 
@@ -92,27 +96,27 @@ gulp.task('chromeManifest', () => {
           'scripts/chromereload.js'
         ]
       }
-  }))
-  .pipe($.if('*.css', $.cleanCss({compatibility: '*'})))
-  .pipe($.if('*.js', $.sourcemaps.init()))
-  .pipe($.if('*.js', $.uglify()))
-  .pipe($.if('*.js', $.sourcemaps.write('.')))
-  .pipe(gulp.dest('dist'));
+    }))
+    // .pipe($.if('*.css', $.cleanCss({ compatibility: '*' })))
+    .pipe($.if('*.js', $.sourcemaps.init()))
+    // .pipe($.if('*.js', $.uglify()))
+    .pipe($.if('*.js', $.sourcemaps.write('.')))
+    .pipe(gulp.dest('dist'));
 });
 
 gulp.task('rollup-contentscript', () => {
   return rollup({
     entry: 'app/scripts.babel/contentscript.js',
-    plugins      : [
+    plugins: [
       json(),
       npm({
         jsnext: true,
-        main  : true
+        main: true
       }),
       commonjs(),
       babel({
-        babelrc:false,
-        presets:['es2015-rollup']
+        babelrc: false,
+        presets: ['es2015-rollup']
       })
     ]
   })
@@ -123,46 +127,60 @@ gulp.task('rollup-contentscript', () => {
 gulp.task('rollup-background', () => {
   return rollup({
     entry: 'app/scripts.babel/background.js',
-    plugins      : [
+    plugins: [
       json(),
       npm({
         jsnext: true,
-        main  : true
+        main: true
       }),
       commonjs(),
       babel({
-        babelrc:false,
-        presets:['es2015-rollup']
+        babelrc: false,
+        presets: ['es2015-rollup']
       })
     ]
   })
     .pipe(source('background.js'))
     .pipe(gulp.dest('app/scripts'))
 });
+//
+// gulp.task('rollup-popup', () => {
+//   return rollup({
+//     entry: 'app/scripts.babel/popup.js',
+//     plugins: [
+//       babel({
+//         babelrc: false,
+//         presets: ['es2015-rollup']
+//       })
+//     ]
+//   })
+//     .pipe(source('popup.js'))
+//     .pipe(gulp.dest('app/scripts'))
+// });
 
-gulp.task('rollup-popup', () => {
+gulp.task('rollup-emoji', () => {
   return rollup({
-    entry: 'app/scripts.babel/popup.js',
-    plugins      : [
+    entry: 'app/scripts.babel/vendor/emojiAuto.js',
+    plugins: [
       json(),
       npm({
         jsnext: true,
-        main  : true
+        main: true
       }),
       commonjs(),
       babel({
-        babelrc:false,
-        presets:['es2015-rollup']
+        babelrc: false,
+        presets: ['es2015-rollup']
       })
     ]
   })
-    .pipe(source('popup.js'))
-    .pipe(gulp.dest('app/scripts'))
+    .pipe(source('emojiAuto.js'))
+    .pipe(gulp.dest('app/scripts/vendor'))
 });
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'rollup' , 'html'], () => {
+gulp.task('watch', ['lint', 'rollup', 'html'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -178,7 +196,10 @@ gulp.task('watch', ['lint', 'rollup' , 'html'], () => {
 });
 
 gulp.task('size', () => {
-  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
+  return gulp.src('dist/**/*').pipe($.size({
+    title: 'build',
+    gzip: true
+  }));
 });
 
 gulp.task('wiredep', () => {
@@ -192,16 +213,16 @@ gulp.task('wiredep', () => {
 gulp.task('package', function () {
   var manifest = require('./dist/manifest.json');
   return gulp.src('dist/**')
-      .pipe($.zip('emoji-' + manifest.version + '.zip'))
-      .pipe(gulp.dest('package'));
+    .pipe($.zip('emoji-' + manifest.version + '.zip'))
+    .pipe(gulp.dest('package'));
 });
 
-gulp.task('rollup', ['rollup-contentscript', 'rollup-background', 'rollup-popup']);
+gulp.task('rollup', ['rollup-contentscript', 'rollup-background', 'rollup-emoji']);
 
 gulp.task('build', (cb) => {
   runSequence(
-    'clean', 'lint', 'rollup', 'chromeManifest',
-    ['html', 'images', 'extras'],'zip',
+    'clean', 'vendor', 'lint', 'rollup', 'chromeManifest',
+    ['html', 'images', 'extras'],
     'size', cb);
 });
 
