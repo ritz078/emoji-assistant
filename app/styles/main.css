@@ -1,4 +1,4 @@
-#emoji-autosuggest{
+.emoji-assistant{
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   color:#666;
   background-color: white;
@@ -8,23 +8,28 @@
   border: 1px solid #eeeeee;
   z-index: 9999999;
   box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2);
+  height: auto !important;
+  padding-left: 0;
 }
 
-.emoji-suggestion{
+.emoji-assistant li {
+  list-style-type: none;
+}
+.emoji-assistant .textcomplete-item{
   border-bottom: 1px solid #f6f6f6;
   padding: 2px 5px;
 }
 
-#emoji-autosuggest .inline{
+.emoji-assistant .inline{
   display: inline-block;
   vertical-align: middle;
 }
 
-.emoji-suggestion.active{
+.emoji-assistant .textcomplete-item.active{
   background-color: #eaeaea;
 }
 
-.emoji-suggestion .emoji-name{
+.emoji-assistant .textcomplete-item .emoji-name{
   font-weight: bold;
   font-size: 12px;
   vertical-align: text-bottom;
@@ -32,4 +37,5 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color:black;
 }

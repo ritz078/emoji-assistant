@@ -31,7 +31,7 @@ gulp.task('extras', () => {
 gulp.task('vendor', () => {
   return gulp.src([
     'app/scripts.babel/vendor/jquery.js',
-    'app/scripts.babel/vendor/jquery.caret.js'
+    'app/scripts.babel/vendor/jquery.autocomplete.js',
   ]).pipe(gulp.dest('app/scripts/vendor/'))
 });
 
@@ -180,7 +180,7 @@ gulp.task('rollup-emoji', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'rollup', 'html'], () => {
+gulp.task('watch', ['lint', 'rollup', 'html', 'vendor'], () => {
   $.livereload.listen();
 
   gulp.watch([
