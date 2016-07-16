@@ -1,6 +1,6 @@
 {
   "name": "__MSG_appName__",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
@@ -22,7 +22,7 @@
       ],
       "js": [
         "scripts/vendor/jquery.js",
-        "scripts/vendor/jquery.autocomplete.js",
+        "scripts/vendor/jquery.textcomplete.js",
         "scripts/vendor/emojiAuto.js",
         "scripts/contentscript.js"
       ],
@@ -45,5 +45,8 @@
       "scripts/chromereload.js",
       "scripts/background.js"
     ]
-  }
+  },
+  "web_accessible_resources":[
+    "images/*.png"
+  ]
 }

@@ -31,7 +31,7 @@ gulp.task('extras', () => {
 gulp.task('vendor', () => {
   return gulp.src([
     'app/scripts.babel/vendor/jquery.js',
-    'app/scripts.babel/vendor/jquery.autocomplete.js',
+    'app/scripts.babel/vendor/jquery.textcomplete.js',
   ]).pipe(gulp.dest('app/scripts/vendor/'))
 });
 
