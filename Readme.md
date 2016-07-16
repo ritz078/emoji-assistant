@@ -33,7 +33,7 @@ Sometimes in Single Page Applications, the extension script isn't run at a prope
 
 - [ ] Better GUI for domain enable/disable
 - [ ] Disable at input box level
-- [ ] show twitter emojis if domain is twitter.com
+- [x] show twitter emojis if domain is twitter.com and tweetdeck
 - [ ] Find a workaround for `.onUpdated` API issue mentioned in know issues.
 
 ### Development

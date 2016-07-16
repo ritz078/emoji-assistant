@@ -17,7 +17,7 @@
 }
 .emoji-assistant .textcomplete-item{
   border-bottom: 1px solid #f6f6f6;
-  padding: 2px 5px;
+  padding: 4px;
 }
 
 .emoji-assistant .inline{
@@ -38,4 +38,12 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   color:black;
+}
+
+.emoji-assistant .textcomplete-item .twf{
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  background-size: 820px;
+  vertical-align: top;
 }

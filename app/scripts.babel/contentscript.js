@@ -1,4 +1,15 @@
 import suppress from './helpers/suppress';
+import emojiData from './emoji.json';
+
+function formatEmojiData () {
+  const a = {};
+  emojiData.forEach((val) => {
+    a[val.short_name] = val;
+  });
+  return a;
+}
+
+const emojiObj = formatEmojiData();
 
 'use strict';
 const body = document.body;
@@ -17,9 +28,36 @@ $(window).keydown((e) => {
   }
 });
 
+function getTemplate (value, service=false) {
+  const emoji = emojiObj[value.name];
+
+  if(!emoji) service = false;
+
+  let backgroundImage = '';
+  let backgroundPosition = '';
+
+  if(service){
+    backgroundImage = chrome.extension.getURL(`images/sheet_${service}_64_indexed_256.png`);
+    backgroundPosition = `${-emoji.sheet_x * 20}px ${-emoji.sheet_y * 20}px`;
+  }
+
+  const style = `
+  background-image:url(${backgroundImage});
+  background-position: ${backgroundPosition}`;
+
+  const icon = service ? `<i class='twf twf-lg' style='${style}'></i>` : value.emoji;
+
+  return `
+    <span class='emoji-value inline'>${icon}</span>
+    <span class='emoji-name inline'>${value.name}</span>
+`
+}
+
 function init () {
+  const hostname = window.location.hostname;
+
   // prevent for the textareas of github.com
-  if(window.location.hostname === 'github.com'){
+  if(hostname === 'github.com'){
     $('textarea').addClass('es-disabled');
   }
 
@@ -32,16 +70,23 @@ function init () {
 
   $input = $('div[contenteditable="true"],input[type=text], textarea').not('.es-disabled');
 
-  $input.textcomplete([{
+  $input
+    .textcomplete([{
     id: 'emoji-autosuggest',
     match: /\B:([\-+\w]*)$/,
     search: function (term, callback) {
       callback(window.emojiAuto.match(term))
     },
     template: function (value) {
-      return `
-        <span class='emoji-value inline'>${value.emoji}</span>
-        <span class='emoji-name inline'>${value.name}</span>`
+      const emoji = emojiObj[value.name];
+
+      if(
+        (hostname === 'twitter.com' || hostname === 'tweetdeck.twitter.com')
+        && emoji && emoji.has_img_twitter
+      ){
+        return getTemplate(value, 'twitter');
+      }
+      return getTemplate(value);
     },
     replace: function (value) {
       return value.emoji + ' ';
@@ -54,7 +99,7 @@ function init () {
     placementStr: 'top',
     debounce: 150,
     zIndex: '999999'
-  });
+  })
 }
 
 let url;
