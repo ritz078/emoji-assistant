@@ -44,7 +44,8 @@
     "scripts": [
       "scripts/chromereload.js",
       "scripts/background.js"
-    ]
+    ],
+    "persistent": false
   },
   "web_accessible_resources":[
     "images/*.png"
