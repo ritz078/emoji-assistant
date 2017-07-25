@@ -55,13 +55,9 @@
     }
   },
   "dependencies": {
-    "jquery": "^3.2.1",
-    "jquery-textcomplete": "^1.8.2",
     "js-search": "^1.4.2",
     "just-flush": "^1.0.0",
-    "just-pluck-it": "^1.1.21",
     "lodash.uniqby": "^4.7.0",
-    "node-emoji": "^1.8.1",
-    "textcomplete": "^0.13.1"
+    "node-emoji": "^1.8.1"
   }
 }
