@@ -1,15 +1,12 @@
 import suppress from './helpers/suppress';
 import emojiData from './emoji.json';
+import basicEmoji from 'node-emoji/lib/emoji.json'
+import * as JsSearch from 'js-search';
 
-function formatEmojiData () {
-  const a = {};
-  emojiData.forEach((val) => {
-    a[val.short_name] = val;
-  });
-  return a;
-}
+const search = new JsSearch.__moduleExports.Search('name')
+search.addIndex('short_names')
+search.addDocuments(emojiData)
 
-const emojiObj = formatEmojiData();
 
 'use strict';
 const body = document.body;
@@ -28,9 +25,7 @@ $(window).keydown((e) => {
   }
 });
 
-function getTemplate (value, service=false) {
-  const emoji = emojiObj[value.name];
-
+function getTemplate (emoji, service=false) {
   if(!emoji) service = false;
 
   let backgroundImage = '';
@@ -45,11 +40,11 @@ function getTemplate (value, service=false) {
   background-image:url(${backgroundImage});
   background-position: ${backgroundPosition}`;
 
-  const icon = service ? `<i class='twf twf-lg' style='${style}'></i>` : value.emoji;
+  const icon = service ? `<i class='twf twf-lg' style='${style}'></i>` : basicEmoji[emoji.short_name];
 
   return `
     <span class='emoji-value inline'>${icon}</span>
-    <span class='emoji-name inline'>${value.name}</span>
+    <span class='emoji-name inline'>${(emoji.name || emoji.short_name).toLowerCase()}</span>
 `
 }
 
@@ -75,18 +70,16 @@ function init () {
     id: 'emoji-autosuggest',
     match: /\B:([\-+\w]*)$/,
     search: function (term, callback) {
-      callback(window.emojiAuto.match(term))
+      callback(search.search(term))
     },
-    template: function (value) {
-      const emoji = emojiObj[value.name];
-
+    template: function (emoji) {
       if(
         (hostname === 'twitter.com' || hostname === 'tweetdeck.twitter.com')
         && emoji && emoji.has_img_twitter
       ){
-        return getTemplate(value, 'twitter');
+        return getTemplate(emoji, 'twitter');
       }
-      return getTemplate(value);
+      return getTemplate(emoji);
     },
     replace: function (value) {
       return value.emoji + ' ';
