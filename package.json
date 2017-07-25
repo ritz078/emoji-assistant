@@ -5,7 +5,8 @@
     "node": ">=0.8.0"
   },
   "scripts": {
-    "dev": "gulp"
+    "dev": "gulp",
+    "package": "gulp build && gulp package"
   },
   "devDependencies": {
     "babel-core": "^6.7.2",
