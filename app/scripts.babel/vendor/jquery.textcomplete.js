@@ -137,13 +137,14 @@
     };
 
     var uniqueId = 0;
+    var initializedEditors = [];
 
     function Completer(element, option) {
       this.$el        = $(element);
       this.id         = 'textcomplete' + uniqueId++;
       this.strategies = [];
       this.views      = [];
-      this.option     = $.extend({}, Completer._getDefaults(), option);
+      this.option     = $.extend({}, Completer.defaults, option);
 
       if (!this.$el.is('input[type=text]') && !this.$el.is('input[type=search]') && !this.$el.is('textarea') && !element.isContentEditable && element.contentEditable != 'true') {
         throw new Error('textcomplete must be called on a Textarea or a ContentEditable.');
@@ -160,33 +161,34 @@
 
         // Special handling for CKEditor: lazy init on instance load
         if ((!this.option.adapter || this.option.adapter == 'CKEditor') && typeof CKEDITOR != 'undefined' && (this.$el.is('textarea'))) {
-          CKEDITOR.on("instanceReady", function(event) {
-            event.editor.once("focus", function(event2) {
-              // replace the element with the Iframe element and flag it as CKEditor
-              self.$el = $(event.editor.editable().$);
-              if (!self.option.adapter) {
-                self.option.adapter = $.fn.textcomplete['CKEditor'];
-              }
-              self.initialize();
-            });
+          CKEDITOR.on("instanceReady", function(event) { //For multiple ckeditors on one page: this needs to be executed each time a ckeditor-instance is ready.
+
+            if($.inArray(event.editor.id, initializedEditors) == -1) { //For multiple ckeditors on one page: focus-eventhandler should only be added once for every editor.
+              initializedEditors.push(event.editor.id);
+
+              event.editor.on("focus", function(event2) {
+                //replace the element with the Iframe element and flag it as CKEditor
+                self.$el = $(event.editor.editable().$);
+                if (!self.option.adapter) {
+                  self.option.adapter = $.fn.textcomplete['CKEditor'];
+                }
+                self.option.ckeditor_instance = event.editor; //For multiple ckeditors on one page: in the old code this was not executed when adapter was alread set. So we were ALWAYS working with the FIRST instance.
+                self.initialize();
+              });
+            }
           });
         }
       }
     }
 
-    Completer._getDefaults = function () {
-      if (!Completer.DEFAULTS) {
-        Completer.DEFAULTS = {
-          appendTo: $('body'),
-          className: '',  // deprecated option
-          dropdownClassName: 'dropdown-menu textcomplete-dropdown',
-          maxCount: 10,
-          zIndex: '100'
-        };
-      }
-
-      return Completer.DEFAULTS;
-    }
+    Completer.defaults = {
+      appendTo: 'body',
+      className: '',  // deprecated option
+      dropdownClassName: 'dropdown-menu textcomplete-dropdown',
+      maxCount: 10,
+      zIndex: '100',
+      rightEdgeOffset: 30
+    };
 
     $.extend(Completer.prototype, {
       // Public properties
@@ -473,8 +475,8 @@
 
       render: function (zippedData) {
         var contentsHtml = this._buildContents(zippedData);
-        var unzippedData = $.map(this.data, function (d) { return d.value; });
-        if (this.data.length) {
+        var unzippedData = $.map(zippedData, function (d) { return d.value; });
+        if (zippedData.length) {
           var strategy = zippedData[0].strategy;
           if (strategy.id) {
             this.$el.attr('data-strategy', strategy.id);
@@ -825,7 +827,7 @@
         // to the document width so we don't know if we would have overrun it. As a heuristic to avoid that clipping
         // (which makes our elements wrap onto the next line and corrupt the next item), if we're close to the right
         // edge, move left. We don't know how far to move left, so just keep nudging a bit.
-        var tolerance = 30; // pixels. Make wider than vertical scrollbar because we might not be able to use that space.
+        var tolerance = this.option.rightEdgeOffset; // pixels. Make wider than vertical scrollbar because we might not be able to use that space.
         var lastOffset = this.$el.offset().left, offset;
         var width = this.$el.width();
         var maxLeft = $window.width() - tolerance;
@@ -838,13 +840,12 @@
       },
 
       _applyPlacement: function (position) {
-        position.height = Math.min(this.$el.parent().height(), $window.height());
         // If the 'placement' option set to 'top', move the position above the element.
         if (this.placement.indexOf('top') !== -1) {
           // Overwrite the position object to set the 'bottom' property instead of the top.
           position = {
             top: 'auto',
-            bottom: position.height - position.top + position.lineHeight,
+            bottom: this.$el.parent().height() - position.top + position.lineHeight,
             left: position.left
           };
         } else {
@@ -1037,6 +1038,11 @@
         switch (clickEvent.keyCode) {
           case 9:  // TAB
           case 13: // ENTER
+          case 16: // SHIFT
+          case 17: // CTRL
+          case 18: // ALT
+          case 33: // PAGEUP
+          case 34: // PAGEDOWN
           case 40: // DOWN
           case 38: // UP
           case 27: // ESC
@@ -1323,7 +1329,7 @@
     $.extend(CKEditor.prototype, $.fn.textcomplete.ContentEditable.prototype, {
       _bindEvents: function () {
         var $this = this;
-        CKEDITOR.instances["issue_notes"].on('key', function(event) {
+        this.option.ckeditor_instance.on('key', function(event) {
           var domEvent = event.data;
           $this._onKeyup(domEvent);
           if ($this.completer.dropdown.shown && $this._skipSearch(domEvent)) {

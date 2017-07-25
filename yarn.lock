@@ -2650,6 +2650,14 @@ jpegtran-bin@^3.0.0:
     bin-wrapper "^3.0.0"
     logalot "^2.0.0"
 
+jquery-textcomplete@^1.8.2:
+  version "1.8.2"
+  resolved "https://registry.yarnpkg.com/jquery-textcomplete/-/jquery-textcomplete-1.8.2.tgz#225c5f6aac7c09c0e7b210cb004f8017b0ab0367"
+
+jquery@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
+
 js-search@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/js-search/-/js-search-1.4.2.tgz#59a91e117d6badb20bf0d7643ba7577d5a81d7e2"
@@ -2697,6 +2705,14 @@ jsonify@~0.0.0:
 jsonpointer@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-4.0.1.tgz#4fd92cb34e0e9db3c89c8622ecf51f9b978c6cb9"
+
+just-flush@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/just-flush/-/just-flush-1.0.0.tgz#d0f102a7162974237e712f8864029c11784f9635"
+
+just-pluck-it@^1.1.21:
+  version "1.1.21"
+  resolved "https://registry.yarnpkg.com/just-pluck-it/-/just-pluck-it-1.1.21.tgz#8675fba91aabf68cb56f3131fae8ee7dc04cb0f3"
 
 kind-of@^3.0.2:
   version "3.2.2"
@@ -2897,6 +2913,10 @@ lodash.templatesettings@^3.0.0:
 lodash.toarray@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/lodash.toarray/-/lodash.toarray-4.4.0.tgz#24c4bfcd6b2fba38bfd0594db1179d8e9b656561"
+
+lodash.uniqby@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/lodash.uniqby/-/lodash.uniqby-4.7.0.tgz#d99c07a669e9e6d24e1362dfe266c67616af1302"
 
 lodash@^4.0.0, lodash@^4.13.1, lodash@^4.2.0, lodash@^4.3.0, lodash@^4.6.1:
   version "4.17.4"
