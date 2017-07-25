@@ -9,3 +9,4 @@ package
 app/scripts
 .idea
 
+yarn-error.log

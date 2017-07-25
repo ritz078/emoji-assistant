@@ -35,6 +35,12 @@ gulp.task('vendor', () => {
   ]).pipe(gulp.dest('app/scripts/vendor/'))
 });
 
+gulp.task('copy-chromereload', () => {
+  return gulp.src([
+    'app/scripts.babel/chromereload.js'
+  ]).pipe(gulp.dest('app/scripts/'))
+})
+
 function lint (files, options) {
   return () => {
     return gulp.src(files)
@@ -158,29 +164,9 @@ gulp.task('rollup-background', () => {
 //     .pipe(gulp.dest('app/scripts'))
 // });
 
-gulp.task('rollup-emoji', () => {
-  return rollup({
-    entry: 'app/scripts.babel/vendor/emojiAuto.js',
-    plugins: [
-      json(),
-      npm({
-        jsnext: true,
-        main: true
-      }),
-      commonjs(),
-      babel({
-        babelrc: false,
-        presets: ['es2015-rollup']
-      })
-    ]
-  })
-    .pipe(source('emojiAuto.js'))
-    .pipe(gulp.dest('app/scripts/vendor'))
-});
-
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('watch', ['lint', 'rollup', 'html', 'vendor'], () => {
+gulp.task('watch', ['lint', 'rollup', 'html', 'vendor', 'copy-chromereload'], () => {
   $.livereload.listen();
 
   gulp.watch([
@@ -217,7 +203,7 @@ gulp.task('package', function () {
     .pipe(gulp.dest('package'));
 });
 
-gulp.task('rollup', ['rollup-contentscript', 'rollup-background', 'rollup-emoji']);
+gulp.task('rollup', ['rollup-contentscript', 'rollup-background']);
 
 gulp.task('build', (cb) => {
   runSequence(

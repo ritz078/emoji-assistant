@@ -23,7 +23,6 @@
       "js": [
         "scripts/vendor/jquery.js",
         "scripts/vendor/jquery.textcomplete.js",
-        "scripts/vendor/emojiAuto.js",
         "scripts/contentscript.js"
       ],
       "css": [
