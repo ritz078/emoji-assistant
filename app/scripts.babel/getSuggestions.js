@@ -3,6 +3,7 @@ import uniqBy from 'lodash.uniqby'
 import matchSorter from 'match-sorter'
 import emojiData from './emoji.json'
 import basicEmoji from 'node-emoji/lib/emoji.json'
+import emojilib from 'emojilib/emojis.json'
 
 function swap (json) {
   const ret = {}
@@ -21,6 +22,10 @@ function getEmojiDetailsFromEmoji (emoji) {
   return emojiData.filter(x => x.short_name === emojiName)[0]
 }
 
+function getEmoji (name) {
+  return basicEmoji[name] || (emojilib[name.replace('-', '_')] && emojilib[name.replace('-', '_')].char)
+}
+
 export default function getSuggestions (term, cb) {
   chrome.storage.sync.get({
     smartSuggestions: true
@@ -28,6 +33,7 @@ export default function getSuggestions (term, cb) {
     const filtered = matchSorter(emojiData, term, {
       keys: ['name', 'short_names']
     })
+      .filter(x => !!getEmoji(x.short_name))
 
     if (items.smartSuggestions) {
       fetch(`https://emoji.getdango.com/api/emoji?q=${term}`)
@@ -38,7 +44,8 @@ export default function getSuggestions (term, cb) {
           }))
 
           const suggestions = uniqBy(smartEmojis.concat(filtered), 'short_name')
-          cb(suggestions)
+          const presentSuggestions = suggestions.filter(x => !!getEmoji(x.short_name))
+          cb(presentSuggestions)
         })
         .catch(error => {
           const filtered = matchSorter(emojiData, term, {

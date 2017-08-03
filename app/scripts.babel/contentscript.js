@@ -2,6 +2,7 @@ import suppress from './helpers/suppress'
 import basicEmoji from 'node-emoji/lib/emoji.json'
 import getSuggestions from './getSuggestions'
 import getTemplate from './getTemplate'
+import emojilib from 'emojilib/emojis.json'
 
 const body = document.body
 let $input, blacklistedDomains = []
@@ -18,6 +19,10 @@ $(window).keydown((e) => {
     init()
   }
 })
+
+function getEmoji (name) {
+  return basicEmoji[name] || (emojilib[name.replace('-', '_')] && emojilib[name.replace('-', '_')].char)
+}
 
 function init () {
   const hostname = window.location.hostname
@@ -49,7 +54,7 @@ function init () {
         return getTemplate(emoji, service)
       },
       replace: function (value) {
-        return basicEmoji[value.short_name] + ' '
+        return getEmoji(value.short_name) + ' '
       },
       index: 1
     }], {
