@@ -56,9 +56,9 @@
     }
   },
   "dependencies": {
-    "js-search": "^1.4.2",
     "just-flush": "^1.0.0",
     "lodash.uniqby": "^4.7.0",
+    "match-sorter": "^1.8.1",
     "node-emoji": "^1.8.1"
   }
 }
