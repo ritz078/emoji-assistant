@@ -1,4 +1,6 @@
-chrome.storage.sync.get(function (items) {
+chrome.storage.sync.get({
+  smartSuggestions: true
+},function (items) {
   document.getElementById('box1').checked = items.smartSuggestions
 })
 
