@@ -57,7 +57,7 @@ function init () {
       height: 265,
       maxCount: 14,
       placementStr: 'top',
-      debounce: 800,
+      debounce: 400,
       zIndex: '999999'
     })
 }
