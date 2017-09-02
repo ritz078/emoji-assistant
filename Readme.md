@@ -15,6 +15,7 @@
 * [Screenshot](#screenshot)
 * [Disabling on a domain](#disabling-on-a-domain)
 * [Know issues](#known-issues)
+* [Disable Smart suggestions](#disable-smart-suggestions)
 * [Todo](#todo)
 * [Development](#development)
 
@@ -28,6 +29,9 @@ The icon of the extension works as a toggle switch. Click on it and it will enab
 
 ### Known Issues
 Sometimes in Single Page Applications, the extension script isn't run at a proper time when the page updates due to the [inconsistent behaviour](http://stackoverflow.com/questions/27708352/chrome-tabs-onupdated-addlistener-called-multiple-times) of `chrome.tabs.onUpdated` API. In such cases you can manually trigger the extension by using the shortcut `Cmd/Ctrl + Alt + E`. 
+
+### Disable smart suggestions
+In case you don't need smart suggestions or you feel that the suggestions are slow to come, you can disable smart suggestions by going to `Emoji assistant icon > Right Click > Options > Disable Smart Suggestions Checkbox` 
 
 ### Todo
 
